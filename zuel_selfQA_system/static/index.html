@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZUEL 学生手册问答系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">ZUEL 学生手册问答系统</h1>
+        
+        <div class="max-w-2xl mx-auto">
+            <div class="mb-6">
+                <textarea id="question" 
+                    class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:border-blue-500"
+                    rows="3" 
+                    placeholder="请输入您的问题..."></textarea>
+            </div>
+            
+            <div class="text-center mb-8">
+                <button id="submit" 
+                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    提交问题
+                </button>
+            </div>
+
+            <div id="loading" class="hidden text-center mb-4">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            </div>
+
+            <div id="answer-container" class="hidden">
+                <div class="bg-white rounded-lg p-6 shadow-md mb-4">
+                    <h2 class="text-xl font-semibold mb-4">回答：</h2>
+                    <div id="answer" class="text-gray-700"></div>
+                </div>
+
+                <div class="bg-white rounded-lg p-6 shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">参考来源：</h2>
+                    <div id="sources" class="text-gray-700"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submit').addEventListener('click', async () => {
+            const question = document.getElementById('question').value.trim();
+            if (!question) return;
+
+            // 显示加载动画
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('answer-container').classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: question }),
+                });
+
+                const data = await response.json();
+
+                // 显示答案和来源
+                document.getElementById('answer').textContent = data.answer;
+                document.getElementById('sources').innerHTML = data.sources
+                    .map((source, index) => `<div class="mb-2"><strong>来源 ${index + 1}:</strong> ${source}</div>`)
+                    .join('');
+
+                document.getElementById('answer-container').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('发生错误，请稍后重试');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
