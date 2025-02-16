@@ -29,7 +29,7 @@ VECTOR_STORE_PATH = os.path.join(CURRENT_DIR, "vector_store")
 
 # 初始化OpenAI客户端
 client = OpenAI(
-    api_key="sk-4ZSzhNuBKtIUzICHSKPAIkF4NwgaNFbuAgoWmpifgoQAS5RR",
+    api_key="！！！请修改APIkey！！！可以在这个网站免费申请https://github.com/chatanywhere/GPT_API_free?tab=readme-ov-file",
     base_url="https://api.chatanywhere.tech/v1"
 )
 
